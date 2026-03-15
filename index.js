@@ -57,7 +57,8 @@ async function sendPayheroStk({ phone, amount, reference }) {
     description: `Fuliza payment ${reference}`
   };
 
-  const endpoint = `${PAYHERO_BASE_URL}/payment-request`;
+  const PAYHERO_ENDPOINT = process.env.PAYHERO_ENDPOINT || 'payment-requests';
+  const endpoint = `${PAYHERO_BASE_URL}/${PAYHERO_ENDPOINT}`;
   console.log('Calling PayHero endpoint:', endpoint);
 
   const response = await fetch(endpoint, {

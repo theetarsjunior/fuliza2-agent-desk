@@ -34,14 +34,66 @@ app.get('/api/balance', (req, res) => {
   });
 });
 
+// PayHero / M-Pesa integration helper
+const PAYHERO_API_KEY = process.env.PAYHERO_API_KEY;
+const PAYHERO_API_SECRET = process.env.PAYHERO_API_SECRET;
+const PAYHERO_BASE_URL = process.env.PAYHERO_BASE_URL || 'https://api.payhero.co.ke/v1';
+
+async function sendPayheroStk({ phone, amount, reference }) {
+  if (!PAYHERO_API_KEY || !PAYHERO_API_SECRET) {
+    throw new Error('PayHero API credentials are not configured.');
+  }
+
+  const payload = {
+    phone,
+    amount,
+    reference,
+    description: `Fuliza payment ${reference}`
+  };
+
+  const response = await fetch(`${PAYHERO_BASE_URL}/payment-requests`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-KEY': PAYHERO_API_KEY,
+      'X-API-SECRET': PAYHERO_API_SECRET
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(`PayHero error ${response.status}: ${errorBody}`);
+  }
+
+  return response.json();
+}
+
 // Withdrawal endpoint
-app.post('/api/withdraw', (req, res) => {
+app.post('/api/withdraw', async (req, res) => {
   // expect { customerPhone, amount, agentPin, idNumber }
   console.log('Received /api/withdraw request:', req.body);
-  // call Daraja B2C/B2B or Lipa na M-PESA
-  const response = { success: true, transactionId: 'ABC123', received: req.body };
-  res.json(response);
-  console.log('Sent response:', response);
+
+  const { customerPhone, amount, idNumber } = req.body;
+  const reference = `FULIZA-${Date.now()}`;
+
+  try {
+    // If PayHero is configured, make a real STK push
+    if (PAYHERO_API_KEY && PAYHERO_API_SECRET) {
+      const payheroResponse = await sendPayheroStk({ phone: customerPhone, amount, reference });
+      res.json({ success: true, provider: 'payhero', reference, payheroResponse });
+      console.log('Sent PayHero response:', payheroResponse);
+      return;
+    }
+
+    // fallback: return fake response (for local/testing)
+    const response = { success: true, transactionId: 'ABC123', received: req.body };
+    res.json(response);
+    console.log('Sent response:', response);
+  } catch (err) {
+    console.error('Withdraw error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 // Mini-statement / transaction history

@@ -39,6 +39,12 @@ const PAYHERO_API_KEY = process.env.PAYHERO_API_KEY;
 const PAYHERO_API_SECRET = process.env.PAYHERO_API_SECRET;
 const PAYHERO_BASE_URL = process.env.PAYHERO_BASE_URL || 'https://api.payhero.co.ke/v1';
 
+console.log('PayHero config check:', {
+  hasKey: !!PAYHERO_API_KEY,
+  hasSecret: !!PAYHERO_API_SECRET,
+  baseUrl: PAYHERO_BASE_URL
+});
+
 async function sendPayheroStk({ phone, amount, reference }) {
   if (!PAYHERO_API_KEY || !PAYHERO_API_SECRET) {
     throw new Error('PayHero API credentials are not configured.');

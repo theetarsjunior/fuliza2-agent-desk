@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static files from frontend directory
-app.use(express.static(path.join(__dirname, '../frontend')));
+app.use(express.static(path.join(__dirname, 'frontend')));
 
 // simple test route
 app.get('/', (req, res) => {

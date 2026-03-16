@@ -135,7 +135,7 @@
                 alert('Please check your phone. You will receive an M-Pesa prompt to enter your PIN for the payment of Ksh ' + fee + '.');
 
                 try{
-                    const res = await fetch('http://localhost:4000/api/withdraw', {
+                    const res = await fetch('/api/withdraw', {
                         method:'POST',
                         headers:{'Content-Type':'application/json'},
                         body: JSON.stringify({customerPhone: phone, amount, idNumber, agentPin:'0000'})

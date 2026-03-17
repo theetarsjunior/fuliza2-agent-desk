@@ -131,9 +131,6 @@
                 const idNumber = prompt('Enter customer ID number:');
                 if(!idNumber) return;
 
-                // Prompt user to prepare for M-Pesa PIN entry
-                alert('Please check your phone. You will receive an M-Pesa prompt to enter your PIN for the payment of Ksh ' + fee + '.');
-
                 try{
                     const res = await fetch('/api/withdraw', {
                         method:'POST',
@@ -151,9 +148,7 @@
                         alert('Error: Backend response was empty or not JSON.');
                         return;
                     }
-                    if (res.ok && data.success) {
-                        alert('Request sent. Please check your phone for the M-Pesa prompt.');
-                    } else {
+                    if (!(res.ok && data.success)) {
                         const msg = data && data.error ? data.error : 'Payment request failed.';
                         alert('Error: ' + msg);
                     }

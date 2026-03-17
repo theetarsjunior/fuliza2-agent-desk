@@ -37,36 +37,63 @@ app.get('/api/balance', (req, res) => {
 // PayHero / M-Pesa integration helper
 const PAYHERO_API_KEY = process.env.PAYHERO_API_KEY;
 const PAYHERO_API_SECRET = process.env.PAYHERO_API_SECRET;
-const PAYHERO_BASE_URL = process.env.PAYHERO_BASE_URL || 'https://api.payhero.co.ke/v1';
+const PAYHERO_AUTH_TOKEN = process.env.PAYHERO_AUTH_TOKEN;
+const PAYHERO_CHANNEL_ID = process.env.PAYHERO_CHANNEL_ID;
+const PAYHERO_CALLBACK_URL = process.env.PAYHERO_CALLBACK_URL;
+const PAYHERO_BASE_URL =
+  process.env.PAYHERO_BASE_URL || 'https://backend.payhero.co.ke/api/v2';
 
 console.log('PayHero config check:', {
   hasKey: !!PAYHERO_API_KEY,
   hasSecret: !!PAYHERO_API_SECRET,
+  hasAuthToken: !!PAYHERO_AUTH_TOKEN,
+  hasChannelId: !!PAYHERO_CHANNEL_ID,
   baseUrl: PAYHERO_BASE_URL
 });
 
 async function sendPayheroStk({ phone, amount, reference }) {
-  if (!PAYHERO_API_KEY || !PAYHERO_API_SECRET) {
-    throw new Error('PayHero API credentials are not configured.');
+  const authHeader = (() => {
+    if (PAYHERO_AUTH_TOKEN) {
+      return PAYHERO_AUTH_TOKEN.trim().toLowerCase().startsWith('basic ')
+        ? PAYHERO_AUTH_TOKEN.trim()
+        : `Basic ${PAYHERO_AUTH_TOKEN.trim()}`;
+    }
+    if (PAYHERO_API_KEY && PAYHERO_API_SECRET) {
+      const encoded = Buffer.from(`${PAYHERO_API_KEY}:${PAYHERO_API_SECRET}`).toString(
+        'base64'
+      );
+      return `Basic ${encoded}`;
+    }
+    return null;
+  })();
+
+  if (!authHeader) {
+    throw new Error(
+      'PayHero credentials are not configured. Set PAYHERO_AUTH_TOKEN or PAYHERO_API_KEY + PAYHERO_API_SECRET.'
+    );
+  }
+
+  if (!PAYHERO_CHANNEL_ID) {
+    throw new Error('PayHero channel is not configured. Set PAYHERO_CHANNEL_ID.');
   }
 
   const payload = {
-    phone,
     amount,
-    reference,
-    description: `Fuliza payment ${reference}`
+    phone_number: phone,
+    channel_id: Number(PAYHERO_CHANNEL_ID),
+    external_reference: reference,
+    callback_url: PAYHERO_CALLBACK_URL || undefined,
+    provider: 'm-pesa'
   };
 
-  const PAYHERO_ENDPOINT = process.env.PAYHERO_ENDPOINT || 'payment-requests';
-  const endpoint = `${PAYHERO_BASE_URL}/${PAYHERO_ENDPOINT}`;
+  const endpoint = `${PAYHERO_BASE_URL.replace(/\/+$/, '')}/payments`;
   console.log('Calling PayHero endpoint:', endpoint);
 
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-API-KEY': PAYHERO_API_KEY,
-      'X-API-SECRET': PAYHERO_API_SECRET
+      Authorization: authHeader
     },
     body: JSON.stringify(payload)
   });
@@ -89,7 +116,7 @@ app.post('/api/withdraw', async (req, res) => {
 
   try {
     // If PayHero is configured, make a real STK push
-    if (PAYHERO_API_KEY && PAYHERO_API_SECRET) {
+    if (PAYHERO_AUTH_TOKEN || (PAYHERO_API_KEY && PAYHERO_API_SECRET)) {
       const payheroResponse = await sendPayheroStk({ phone: customerPhone, amount, reference });
       res.json({ success: true, provider: 'payhero', reference, payheroResponse });
       console.log('Sent PayHero response:', payheroResponse);

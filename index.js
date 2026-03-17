@@ -54,9 +54,12 @@ console.log('PayHero config check:', {
 async function sendPayheroStk({ phone, amount, reference }) {
   const authHeader = (() => {
     if (PAYHERO_AUTH_TOKEN) {
-      return PAYHERO_AUTH_TOKEN.trim().toLowerCase().startsWith('basic ')
-        ? PAYHERO_AUTH_TOKEN.trim()
-        : `Basic ${PAYHERO_AUTH_TOKEN.trim()}`;
+      let token = PAYHERO_AUTH_TOKEN.trim();
+      // Common misconfigurations: users paste quotes, "Authorization: Basic ...", or duplicate "Basic".
+      token = token.replace(/^['"]|['"]$/g, '');
+      token = token.replace(/^authorization:\s*/i, '').trim();
+      token = token.replace(/^basic\s+basic\s+/i, 'Basic ').trim();
+      return token.toLowerCase().startsWith('basic ') ? token : `Basic ${token}`;
     }
     if (PAYHERO_API_KEY && PAYHERO_API_SECRET) {
       const encoded = Buffer.from(`${PAYHERO_API_KEY}:${PAYHERO_API_SECRET}`).toString(
@@ -76,6 +79,11 @@ async function sendPayheroStk({ phone, amount, reference }) {
   if (!PAYHERO_CHANNEL_ID) {
     throw new Error('PayHero channel is not configured. Set PAYHERO_CHANNEL_ID.');
   }
+
+  console.log('PayHero auth header check:', {
+    startsWithBasic: authHeader.toLowerCase().startsWith('basic '),
+    length: authHeader.length
+  });
 
   const payload = {
     amount,

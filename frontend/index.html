@@ -16,13 +16,9 @@
     </header>
     <main class="container">
         <section class="cards">
-            <div class="card" data-amount="1000">
-                <span class="amount">Ksh 1,000</span>
-                <span class="fee">Fee: Ksh 30</span>
-            </div>
             <div class="card" data-amount="2000">
                 <span class="amount">Ksh 2,000</span>
-                <span class="fee">Fee: Ksh 60</span>
+                <span class="fee">Fee: Ksh 75</span>
             </div>
             <div class="card" data-amount="3000">
                 <span class="amount">Ksh 3,000</span>
@@ -98,8 +94,7 @@
                 const packageAmount = card.dataset.amount; // e.g. 30000
                 // Fee mapping for each package amount
                 const feeMap = {
-                    '1000': 30,
-                    '2000': 60,
+                    '2000': 75,
                     '3000': 89,
                     '4000': 119,
                     '5000': 149,

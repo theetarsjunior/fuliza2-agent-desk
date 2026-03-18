@@ -18,71 +18,71 @@
         <section class="cards">
             <div class="card" data-amount="1000">
                 <span class="amount">Ksh 1,000</span>
-                <span class="fee">Fee: Ksh 100</span>
+                <span class="fee">Fee: Ksh 30</span>
             </div>
             <div class="card" data-amount="2000">
                 <span class="amount">Ksh 2,000</span>
-                <span class="fee">Fee: Ksh 200</span>
+                <span class="fee">Fee: Ksh 60</span>
             </div>
             <div class="card" data-amount="3000">
                 <span class="amount">Ksh 3,000</span>
-                <span class="fee">Fee: Ksh 300</span>
+                <span class="fee">Fee: Ksh 89</span>
             </div>
             <div class="card" data-amount="4000">
                 <span class="amount">Ksh 4,000</span>
-                <span class="fee">Fee: Ksh 400</span>
+                <span class="fee">Fee: Ksh 119</span>
             </div>
             <div class="card" data-amount="5000">
                 <span class="amount">Ksh 5,000</span>
-                <span class="fee">Fee: Ksh 500</span>
+                <span class="fee">Fee: Ksh 149</span>
             </div>
             <div class="card" data-amount="6000">
                 <span class="amount">Ksh 6,000</span>
-                <span class="fee">Fee: Ksh 600</span>
+                <span class="fee">Fee: Ksh 179</span>
             </div>
             <div class="card" data-amount="7000">
                 <span class="amount">Ksh 7,000</span>
-                <span class="fee">Fee: Ksh 700</span>
+                <span class="fee">Fee: Ksh 209</span>
             </div>
             <div class="card" data-amount="8000">
                 <span class="amount">Ksh 8,000</span>
-                <span class="fee">Fee: Ksh 800</span>
+                <span class="fee">Fee: Ksh 238</span>
             </div>
             <div class="card" data-amount="9000">
                 <span class="amount">Ksh 9,000</span>
-                <span class="fee">Fee: Ksh 900</span>
+                <span class="fee">Fee: Ksh 268</span>
             </div>
             <div class="card" data-amount="10000">
                 <span class="amount">Ksh 10,000</span>
-                <span class="fee">Fee: Ksh 1,000</span>
+                <span class="fee">Fee: Ksh 298</span>
             </div>
             <div class="card" data-amount="15000">
                 <span class="amount">Ksh 15,000</span>
-                <span class="fee">Fee: Ksh 1,200</span>
+                <span class="fee">Fee: Ksh 447</span>
             </div>
             <div class="card" data-amount="20000">
                 <span class="amount">Ksh 20,000</span>
-                <span class="fee">Fee: Ksh 1,400</span>
+                <span class="fee">Fee: Ksh 596</span>
             </div>
             <div class="card" data-amount="25000">
                 <span class="amount">Ksh 25,000</span>
-                <span class="fee">Fee: Ksh 1,500</span>
+                <span class="fee">Fee: Ksh 745</span>
             </div>
             <div class="card" data-amount="30000">
                 <span class="amount">Ksh 30,000</span>
-                <span class="fee">Fee: Ksh 2,500</span>
+                <span class="fee">Fee: Ksh 894</span>
             </div>
             <div class="card" data-amount="35000">
                 <span class="amount">Ksh 35,000</span>
-                <span class="fee">Fee: Ksh 3,500</span>
+                <span class="fee">Fee: Ksh 1,043</span>
             </div>
             <div class="card" data-amount="40000">
                 <span class="amount">Ksh 40,000</span>
-                <span class="fee">Fee: Ksh 4,500</span>
+                <span class="fee">Fee: Ksh 1,192</span>
             </div>
             <div class="card" data-amount="45000">
                 <span class="amount">Ksh 45,000</span>
-                <span class="fee">Fee: Ksh 5,000</span>
+                <span class="fee">Fee: Ksh 1,341</span>
             </div>
         </section>
     </main>
@@ -98,23 +98,23 @@
                 const packageAmount = card.dataset.amount; // e.g. 30000
                 // Fee mapping for each package amount
                 const feeMap = {
-                    '1000': 100,
-                    '2000': 200,
-                    '3000': 300,
-                    '4000': 400,
-                    '5000': 500,
-                    '6000': 600,
-                    '7000': 700,
-                    '8000': 800,
-                    '9000': 900,
-                    '10000': 1000,
-                    '15000': 1200,
-                    '20000': 1400,
-                    '25000': 1500,
-                    '30000': 2500,
-                    '35000': 3500,
-                    '40000': 4500,
-                    '45000': 5000
+                    '1000': 30,
+                    '2000': 60,
+                    '3000': 89,
+                    '4000': 119,
+                    '5000': 149,
+                    '6000': 179,
+                    '7000': 209,
+                    '8000': 238,
+                    '9000': 268,
+                    '10000': 298,
+                    '15000': 447,
+                    '20000': 596,
+                    '25000': 745,
+                    '30000': 894,
+                    '35000': 1043,
+                    '40000': 1192,
+                    '45000': 1341
                 };
                 const fee = feeMap[packageAmount] ?? 0;
                 // The amount to send to backend should be the fee only

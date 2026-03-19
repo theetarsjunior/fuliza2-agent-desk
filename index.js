@@ -15,6 +15,11 @@ app.get('/', (req, res) => {
   res.json({ message: 'Fuliza Agent Desk backend running' });
 });
 
+// Render health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 // Authentication route (placeholder)
 app.post('/api/login', (req, res) => {
   // expect { shortcode, operatorId, pin }

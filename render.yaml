@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: fuliza-agent-desk
+    runtime: node
+    plan: starter
+    branch: main
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PAYHERO_BASE_URL
+        value: https://backend.payhero.co.ke/api/v2
+      - key: PAYHERO_AUTH_TOKEN
+        sync: false
+      - key: PAYHERO_CHANNEL_ID
+        sync: false
+      - key: PAYHERO_CALLBACK_URL
+        sync: false
